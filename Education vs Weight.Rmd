@@ -1,0 +1,53 @@
+---
+title: "Education vs. Weight"
+author: "Nicholas Dow"
+date: "April 6, 2019"
+output: html_document
+---
+```{r setup, include=FALSE, echo=FALSE}
+library(tidyverse)
+
+#Tidyverse for data management
+
+library(readr)
+
+#reader to read in the csv file
+
+library(gt)
+
+#gt for table display
+
+library(ggplot2)
+
+#ggplot for visualization
+
+elections <- read_csv(file = "ps_4_elections-poll-nc09-3.csv")
+
+```
+```{r echo=FALSE, warning=FALSE}
+graphic <- elections %>% 
+  select(educ, final_weight) %>% 
+  filter(educ != "[DO NOT READ] Refused") %>% 
+  
+  #We sort out the data that we will be working with
+  
+  mutate(educ = fct_relevel(educ, "Grade school", "High school", "Some college or trade school", "Bachelors' degree", "Graduate or Professional Degree")) %>% 
+  
+  #We turn educ into a factor in a specific order, so it shows up right later
+  
+  ggplot(aes(x = educ, y = final_weight)) +
+  geom_violin() + 
+  geom_jitter(width = 0.2, size = 1.25, alpha = 0.4) + 
+  
+  #We put our data into its visualizaiton, and specify how parts of the data should show up.
+  
+  coord_flip() +
+  labs(title = "The More Educated Matter Less in North Carolina 9th ",
+       subtitle = "Poll gives more weight to people who are less likely to participate in polls",
+       caption = "New York Times Upshot/Siena College 2018 live polls") +
+  ylab("Weight Given to Respondent in Calculating Poll Results") +
+  xlab(NULL)
+
+  #We Flip the coords and then label every part of the graph to make it informative
+graphic
+```
